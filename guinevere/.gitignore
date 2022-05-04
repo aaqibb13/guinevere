@@ -14,8 +14,13 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# Miscellaneous Files
 vcs.xml
 modules.xml
 .name
+
+# Env files
 .env
+
+# Idea Config Files
 .idea/

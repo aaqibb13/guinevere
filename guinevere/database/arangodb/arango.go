@@ -274,3 +274,32 @@ func CreateACustomAnalyzer(db driver.Database) error {
 	logrus.Info("existed: ", customAnalyzer)
 	return nil
 }
+
+func InitializeDBTransaction(readCols, writeCols []string) (driver.Database, context.Context, context.Context, driver.TransactionID, error) {
+	ctx := context.Background()
+
+	// Creating db connection here
+	db, err := InitializeArangoDb()
+	if err != nil {
+		logrus.Error("error initializing database connection: ", err)
+		return nil, nil, nil, "", err
+	}
+
+	// Specifying which transactions are accessed by a transaction
+	cols := driver.TransactionCollections{
+		Read:  readCols,
+		Write: writeCols,
+	}
+
+	// Begin database transaction
+	txnId, err := db.BeginTransaction(ctx, cols, nil)
+	if err != nil {
+		logrus.Error("error: ", err)
+		return nil, nil, nil, "", err
+	}
+
+	// Create transaction context
+	txnCtx := driver.WithTransactionID(ctx, txnId)
+
+	return db, ctx, txnCtx, txnId, nil
+}
