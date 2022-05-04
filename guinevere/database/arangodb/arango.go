@@ -227,3 +227,50 @@ func CreateSearchViews(db driver.Database, ctx context.Context) error {
 	logrus.Println("Database initialization process complete.")
 	return nil
 }
+
+func CreateACustomAnalyzer(db driver.Database) error {
+	// Setting up a new analyzer
+	ctx := context.Background()
+	var min int64 = 3
+	var max int64 = 3
+	var t = true
+	var utf8 = driver.ArangoSearchNGramStreamUTF8
+
+	// Example 1: Creating a custom analyzer here
+	customAnalyzerDefinition := driver.ArangoSearchAnalyzerDefinition{
+		Name: "custom_analyzer",
+		Type: driver.ArangoSearchAnalyzerTypePipeline,
+		Properties: driver.ArangoSearchAnalyzerProperties{
+			Pipeline: []driver.ArangoSearchAnalyzerPipeline{
+				{
+					Type: driver.ArangoSearchAnalyzerTypeNGram,
+					Properties: driver.ArangoSearchAnalyzerProperties{
+						Min:              &min,
+						Max:              &max,
+						PreserveOriginal: &t,
+						StreamType:       &utf8,
+					},
+				},
+				{
+					Type: driver.ArangoSearchAnalyzerTypeNorm,
+					Properties: driver.ArangoSearchAnalyzerProperties{
+						Locale: "en",
+						Case:   driver.ArangoSearchCaseLower,
+					},
+				},
+			},
+		},
+		Features: []driver.ArangoSearchAnalyzerFeature{
+			driver.ArangoSearchAnalyzerFeatureFrequency,
+			driver.ArangoSearchAnalyzerFeaturePosition,
+			driver.ArangoSearchAnalyzerFeatureNorm,
+		},
+	}
+	_, customAnalyzer, err := db.EnsureAnalyzer(ctx, customAnalyzerDefinition)
+	if err != nil {
+		logrus.Error("error ensuring analyzer exists: ", err)
+		return err
+	}
+	logrus.Info("existed: ", customAnalyzer)
+	return nil
+}

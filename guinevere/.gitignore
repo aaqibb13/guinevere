@@ -17,3 +17,5 @@
 vcs.xml
 modules.xml
 .name
+.env
+.idea/
