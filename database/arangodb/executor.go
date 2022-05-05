@@ -88,3 +88,9 @@ func (q *QueryExecutorArangoDB) ExecuteWithCount(queryText string, bindVars map[
 
 	return data, count, nil
 }
+
+//NewQueryExecutor returns a new query executor
+func NewQueryExecutor() QueryExecutorArangoDB {
+	qe := QueryExecutorArangoDB{}
+	return qe
+}
