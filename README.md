@@ -9,3 +9,6 @@ The repository includes the following functionalities:
 - [x] Creating a simple Query Executor
 - [x] Creating a QueryExecutor with cursor full count
 - [x] Initializing a DB **Transaction**
+
+# TODO
+- [ ] Add tests for every function
