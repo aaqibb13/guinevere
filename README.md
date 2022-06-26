@@ -12,4 +12,3 @@ The repository includes the following functionalities:
 
 # TODO
 - [ ] Add tests for every function
-- [x] Add base crud
