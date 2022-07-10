@@ -12,3 +12,10 @@ The repository includes the following functionalities:
 
 # TODO
 - [ ] Add tests for every function
+
+# How to use:
+- Clone the repository
+- Run:
+
+          go mod tidy
+- You're ready to use the base setup
