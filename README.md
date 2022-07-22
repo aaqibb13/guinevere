@@ -1,5 +1,5 @@
 # AranGO-base-setup
-This respository contains database configuration for ArangoDB database for your go project along with base-crud, creation of Collections, Views, Custom Analyzers, Query Executor, DB Transaction
+This respository contains database configuration for ArangoDB database for your go project along with base-crud, creation of Collections, Custom Analyzers, Views, Query Executor and DB Transaction
 
 # Functionalities
 The repository includes the following functionalities:
