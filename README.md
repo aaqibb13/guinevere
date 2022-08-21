@@ -13,6 +13,7 @@ The repository includes the following functionalities:
 # TODO
 - [ ] Add tests for every function
 - [ ] Add different analyzer types (like norm, ngram, pipeline etc)
+- [ ] Add edit View
 
 # How to use:
 - Clone the repository
