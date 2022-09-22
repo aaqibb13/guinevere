@@ -16,8 +16,11 @@ The repository includes the following functionalities:
 - [ ] Add edit View
 
 # How to use:
-- Clone the repository
+- Clone the repository at your preferred location:
+
+          git clone https://github.com/aaqibb13/guinevere.git
+      
 - Run:
 
           go mod tidy
-- You're ready to use the base setup
+- You're ready to use the base setup.
