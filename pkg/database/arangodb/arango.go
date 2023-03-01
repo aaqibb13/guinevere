@@ -6,8 +6,8 @@ import (
 	"github.com/arangodb/go-driver"
 	arangoHttp "github.com/arangodb/go-driver/http"
 	"github.com/sirupsen/logrus"
-	"guinevere/constants"
-	"guinevere/lib/setting"
+	"guinevere/pkg/constants"
+	"guinevere/pkg/lib/setting"
 	"log"
 )
 

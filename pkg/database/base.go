@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"guinevere/database/arangodb"
-	"guinevere/utils"
+	"guinevere/pkg/database/arangodb"
+	"guinevere/pkg/utils"
 )
 
 var ctx context.Context
