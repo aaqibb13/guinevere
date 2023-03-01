@@ -8,7 +8,7 @@ import (
 	"guinevere/pkg/utils"
 )
 
-var ctx context.Context
+var _ context.Context
 
 func Create(colName string, doc interface{}) ([]map[string]interface{}, error) {
 

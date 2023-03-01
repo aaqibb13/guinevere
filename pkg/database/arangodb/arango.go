@@ -27,7 +27,7 @@ func newArangoDbConfig() arangoDbConfig {
 	config = arangoDbConfig{
 		endpointUrls: []string{db.Host},
 		root:         db.Root,
-		rootPassword: db.Password,
+		rootPassword: db.RootPassword,
 		user:         db.User,
 		password:     db.UserPassword,
 		databaseName: db.Name,
@@ -46,23 +46,27 @@ var DBCollections = []string{
 func InitializeArangoDb() (driver.Database, error) {
 	config := newArangoDbConfig()
 	ctx := context.Background()
-	conn, err := arangoHttp.NewConnection(arangoHttp.ConnectionConfig{
-		Endpoints: config.endpointUrls,
-		TLSConfig: &tls.Config{InsecureSkipVerify: true},
+	logrus.Println("endpoints: ", config.endpointUrls)
+	conn, err := arangoHttp.NewConnection(
+		arangoHttp.ConnectionConfig{
+			Endpoints: config.endpointUrls,
+			TLSConfig: &tls.Config{InsecureSkipVerify: true},
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := driver.NewClient(driver.ClientConfig{
-		Connection:     conn,
-		Authentication: driver.BasicAuthentication(config.user, config.password),
-	})
+	client, err := driver.NewClient(
+		driver.ClientConfig{
+			Connection:     conn,
+			Authentication: driver.BasicAuthentication(config.user, config.password),
+		})
 	if err != nil {
 		return nil, err
 	}
 
 	exists, err := client.DatabaseExists(ctx, config.databaseName)
+	logrus.Println("exists: ", exists)
 	if !exists {
 		db, err := initDatabase(ctx, conn)
 		if err != nil {
@@ -83,16 +87,19 @@ func InitializeArangoDb() (driver.Database, error) {
 func initDatabase(ctx context.Context, conn driver.Connection) (driver.Database, error) {
 	log.Println("Initializing database...")
 	dbConfig := setting.DatabaseSetting
-	client, err := driver.NewClient(driver.ClientConfig{
-		Connection: conn,
-		Authentication: driver.
-			BasicAuthentication(dbConfig.Root, dbConfig.Password),
-	})
+	logrus.Println("dbconfig: ",dbConfig)
+	client, err := driver.NewClient(
+		driver.ClientConfig{
+			Connection: conn,
+			Authentication: driver.
+				BasicAuthentication(dbConfig.Root, dbConfig.RootPassword),
+		})
 
 	if err != nil {
 		log.Println("error in connection using root password", err)
 		return nil, err
 	}
+	logrus.Println("client is: ", &client)
 	active := true
 
 	db, err := client.CreateDatabase(ctx, dbConfig.Name, &driver.CreateDatabaseOptions{
@@ -110,7 +117,6 @@ func initDatabase(ctx context.Context, conn driver.Connection) (driver.Database,
 		return nil, err
 	}
 	log.Println("Database created...")
-	log.Println("New User created...")
 	return db, nil
 }
 
