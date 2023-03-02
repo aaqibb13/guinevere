@@ -13,7 +13,7 @@ func SetupDatabaseSkeleton(db driver.Database, ctx context.Context) error {
 		return err
 	}
 
-	// Create Custom Analyzers if they are created for use in Views
+	// Create Custom Analyzers to be used in Search Views for searching
 	if err := CreateACustomAnalyzer(db); err != nil {
 		logrus.Error("error creating a custom analyzer")
 		return err
