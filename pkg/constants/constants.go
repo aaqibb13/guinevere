@@ -11,3 +11,6 @@ const (
 	DirectorsView = "DirectorView"
 	AlbumsView    = "AlbumView"
 )
+
+const AdminEmail = "admin@example.com"
+const AdminPassword = "passwordadmin"

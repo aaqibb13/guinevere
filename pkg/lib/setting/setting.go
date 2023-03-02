@@ -7,13 +7,13 @@ import (
 )
 
 type Database struct {
-	Type         string
-	User         string
-	UserPassword string
-	Password     string
-	Host         string
-	Name         string
-	Root         string
+	Type         	string
+	User         	string
+	UserPassword 	string
+	Host         	string
+	Name         	string
+	Root         	string
+	RootPassword    string
 }
 
 type Collection struct {
@@ -42,24 +42,23 @@ func Setup() {
 	viper.SetConfigFile(".env")
 	err = viper.ReadInConfig()
 	if err != nil {
-		log.Fatalf("cannot read the env file, please check : ", err)
+		log.Fatalf("cannot read the env file, please check : %s", err)
 		return
 	}
 	setupDB()
 	setupCollections()
 	PORT := viper.GetString("PORT")
 	logrus.Info("Port is: ", PORT)
-
 }
 
 func setupDB() {
 	db := Database{
-		User:         viper.GetString("DATABASE_USER"),
-		UserPassword: viper.GetString("DATABASE_PASSWORD"),
-		Root:         viper.GetString("ARANGO_ROOT"),
-		Password:     viper.GetString("ARANGO_ROOT_PASSWORD"),
-		Host:         viper.GetString("DATABASE_HOST"),
-		Name:         viper.GetString("DATABASE_NAME"),
+		User:         	viper.GetString("DATABASE_USER"),
+		UserPassword: 	viper.GetString("DATABASE_PASSWORD"),
+		Root:         	viper.GetString("ARANGO_ROOT"),
+		RootPassword:   viper.GetString("ARANGO_ROOT_PASSWORD"),
+		Host:         	viper.GetString("DATABASE_HOST"),
+		Name:         	viper.GetString("DATABASE_NAME"),
 	}
 	log.Println("database set...")
 	DatabaseSetting = &db

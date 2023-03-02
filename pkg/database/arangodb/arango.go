@@ -6,8 +6,8 @@ import (
 	"github.com/arangodb/go-driver"
 	arangoHttp "github.com/arangodb/go-driver/http"
 	"github.com/sirupsen/logrus"
-	"guinevere/constants"
-	"guinevere/lib/setting"
+	"guinevere/pkg/constants"
+	"guinevere/pkg/lib/setting"
 	"log"
 )
 
@@ -27,7 +27,7 @@ func newArangoDbConfig() arangoDbConfig {
 	config = arangoDbConfig{
 		endpointUrls: []string{db.Host},
 		root:         db.Root,
-		rootPassword: db.Password,
+		rootPassword: db.RootPassword,
 		user:         db.User,
 		password:     db.UserPassword,
 		databaseName: db.Name,
@@ -44,29 +44,39 @@ var DBCollections = []string{
 }
 
 func InitializeArangoDb() (driver.Database, error) {
+
+	// Load ArangoDB config
 	config := newArangoDbConfig()
 	ctx := context.Background()
-	conn, err := arangoHttp.NewConnection(arangoHttp.ConnectionConfig{
-		Endpoints: config.endpointUrls,
-		TLSConfig: &tls.Config{InsecureSkipVerify: true},
+
+	// A new connection is established to the url where our database is running
+	conn, err := arangoHttp.NewConnection(
+		arangoHttp.ConnectionConfig{
+			Endpoints: config.endpointUrls,
+			TLSConfig: &tls.Config{InsecureSkipVerify: true},
 	})
 	if err != nil {
+		logrus.Error("error establishing connection with db: ", err)
+		return nil, err
+	}
+	
+	// A new client (root) is created, which can perform the dedicated actions then
+	client, err := driver.NewClient(
+		driver.ClientConfig{
+			Connection:     conn,
+			Authentication: driver.BasicAuthentication(config.root, config.rootPassword),
+		})
+	if err != nil {
+		logrus.Error("error creating root client: ", err)
 		return nil, err
 	}
 
-	client, err := driver.NewClient(driver.ClientConfig{
-		Connection:     conn,
-		Authentication: driver.BasicAuthentication(config.user, config.password),
-	})
-	if err != nil {
-		return nil, err
-	}
-
+	// If the database exists, skip creating it, else create a new database using specified name
 	exists, err := client.DatabaseExists(ctx, config.databaseName)
 	if !exists {
-		db, err := initDatabase(ctx, conn)
+		db, err := initDatabase(ctx, client)
 		if err != nil {
-			log.Println("error in initializing database", err)
+			logrus.Error("error initializing database", err)
 			return nil, err
 		}
 		return db, nil
@@ -80,21 +90,9 @@ func InitializeArangoDb() (driver.Database, error) {
 	}
 }
 
-func initDatabase(ctx context.Context, conn driver.Connection) (driver.Database, error) {
-	log.Println("Initializing database...")
+func initDatabase(ctx context.Context, client driver.Client) (driver.Database, error) {
 	dbConfig := setting.DatabaseSetting
-	client, err := driver.NewClient(driver.ClientConfig{
-		Connection: conn,
-		Authentication: driver.
-			BasicAuthentication(dbConfig.Root, dbConfig.Password),
-	})
-
-	if err != nil {
-		log.Println("error in connection using root password", err)
-		return nil, err
-	}
 	active := true
-
 	db, err := client.CreateDatabase(ctx, dbConfig.Name, &driver.CreateDatabaseOptions{
 		Users: []driver.CreateDatabaseUserOptions{
 			{
@@ -106,35 +104,43 @@ func initDatabase(ctx context.Context, conn driver.Connection) (driver.Database,
 	})
 
 	if err != nil {
-		log.Println("error creating database...", err)
+		logrus.Error("error creating database:", err)
 		return nil, err
 	}
-	log.Println("Database created...")
-	log.Println("New User created...")
+	logrus.Info("Database created...")
+
+
+	// Setup database skeletons here (Collections, Analyzers and Views)
+	err = SetupDatabaseSkeleton(db, ctx)
+	if err != nil {
+		logrus.Error("error setting up database skeleton: ", err)
+		return nil, err
+	}
 	return db, nil
 }
 
-// This method is used to create collections
+// Checks whether the collection exists, if a collection does not exist
+// this method creates the specified collection from DBCollections
 func CreateCollections(db driver.Database, ctx context.Context) error {
-	logrus.Info("checking collections")
+	logrus.Info("checking collections...")
 	for _, collection := range DBCollections {
 		if exists, err := db.CollectionExists(ctx, collection); err != nil {
-			log.Println("error fetching collection...", err)
+			logrus.Error("error fetching collection: ", err)
 			return err
 		} else {
-			log.Println("collection exists: ", collection)
+			logrus.Info("collection exists: ", collection)
 			if !exists {
 				logrus.Info("creating collection: ", collection)
 				col, err := db.CreateCollection(ctx, collection, nil)
 				if err != nil {
-					logrus.Println("error creating collection: ", err)
+					logrus.Error("error creating collection: ", err)
 					return err
 				}
-				logrus.Println("collection created: ", col)
+				logrus.Info("collection created: ", col)
 			}
 		}
 	}
-	log.Println("Collections initialized...")
+	logrus.Println("Collections initialized...")
 	return nil
 }
 

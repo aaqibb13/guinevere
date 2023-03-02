@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    container_name: arangodb
+    image: arangodb:latest
+    restart: always
+    ports:
+      - 8529:8529
+    environment:
+      ARANGO_ROOT_USER: root
+      ARANGO_ROOT_PASSWORD: thisisyourrootpassword
+# You might want to check how you want to create your volumes
+#    volumes:
+#      - $PWD/arangodb_data:/var/lib/arangodb3
+#      - $PWD/geojson:/geo
