@@ -19,10 +19,11 @@ The default incorporated functionalities that comes along are:
 - [x] Initializing a DB **Transaction**
 
 # TODO
-- [ ] Add tests for every function
+- [ ] Add tests for every function (Unit tests)
 - [ ] Add different analyzer types (like norm, ngram, pipeline etc)
 - [ ] Include Edit View functionality (ArangoDB does not support editing the views by default)
 - [ ] Improve documentation and code structure
+- [ ] Add scripts for backing up data
 
 ## How to use:
 - Clone the repository at your preferred location:
