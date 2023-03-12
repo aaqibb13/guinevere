@@ -13,13 +13,14 @@ This respository contains database configuration for ArangoDB database for your 
 ## Included functionalities
 The default incorporated functionalities that comes along are:
 - [x] Creation of Databases and corresponding users
-- [x] Creation of **Collections**,**Custom Analyzer** and **Views** at the startup (preferably) 
+- [x] Creation of **Collections**,**Custom Analyzer** and **Views** at the startup (preferably)
 - [x] Query Executor for Execution of raw AQL queries
 - [x] QueryExecutor with cursor full count while executing raw AQL queries
 - [x] Initializing a DB **Transaction**
 
 # TODO
 - [ ] Add tests for every function (Unit tests)
+- [ ] Add creation of Graphs 
 - [ ] Add different analyzer types (like norm, ngram, pipeline etc)
 - [ ] Include Edit View functionality (ArangoDB does not support editing the views by default)
 - [ ] Improve documentation and code structure
