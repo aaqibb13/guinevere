@@ -1,6 +1,6 @@
 ![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/aaqibb13/guinevere) ![Lines of code](https://img.shields.io/tokei/lines/github/aaqibb13/guinevere) ![GitHub last commit](https://img.shields.io/github/last-commit/aaqibb13/guinevere)
 # AranGO-base-setup
-This respository contains database configuration for ArangoDB database for your Go project along with base-crud, creation of Collections, Custom Analyzers, Views, Query Executor and DB Transaction
+This respository contains database configuration for ArangoDB database for your Go project along with base-crud, creation of Collections, Graphs (coming soon) Custom Analyzers, Views, Query Executor and DB Transaction
 
 ## Direct Dependencies (Minimalistic)
 1. **go-driver**: The go-driver is leveraged to provide the functionality a user might need.
