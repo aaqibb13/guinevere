@@ -19,6 +19,7 @@ The default incorporated functionalities that comes along are:
 - [x] Initializing a DB **Transaction**
 
 # TODO
+* Delayed
 - [ ] Add tests for every function (Unit tests)
 - [ ] Add creation of Graphs 
 - [ ] Add different analyzer types (like norm, ngram, pipeline etc)
